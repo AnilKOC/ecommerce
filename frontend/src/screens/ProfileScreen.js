@@ -4,10 +4,9 @@ import { Form, Button, Row, Col} from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
-import { register } from '../actions/userActions'
+import { getUserDetails } from '../actions/userActions'
 
-function RegisterScreen() {
+function ProfileScreen() {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('') 
@@ -22,14 +21,24 @@ function RegisterScreen() {
   
     const redirect = location.pathname ? location.pathname.split('=')[1] : '/'
   
-    const userRegister = useSelector(state => state.userRegister)
-    const { error, loading, userInfo } = userRegister
+    const userDetails = useSelector(state => state.userDetails)
+    const { error, loading, user } = userDetails
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin
   
     useEffect(() => {
-      if(userInfo) {
-          navigate('/')
+      if(!userInfo) {
+          navigate('/login')
+      }else{
+          if(!user || !user.name){
+                dispatch(getUserDetails('profile'))
+          } else {
+              setName(user.name)
+              setEmail(user.email)
+          }
       }
-    }, [userInfo,redirect]
+    }, [dispatch, userInfo , user]
     )
   
     const submitHandler = (e) => {
@@ -37,13 +46,14 @@ function RegisterScreen() {
       if(password != confirmPassword) {
         setMessage('Passwords do not match')
       } else {
-        dispatch(register(name, email, password))
+        console.log('uodate')
       }
       
     }
   return (
-    <FormContainer>
-        <h1>Register</h1>
+    <Row>
+        <Col md={3}>
+        <h2>User Profile</h2>
         {message && <Message variant='danger'>{message}</Message>}
         {error && <Message variant='danger'>{error}</Message>}
         {loading && <Loader />}
@@ -51,7 +61,8 @@ function RegisterScreen() {
 
             <Form.Group controlId='name'>
                 <Form.Label>Name</Form.Label>
-                <Form.Control 
+                <Form.Control
+                    required 
                     type='name'
                     placeholder='Enter Name'
                     value={name}
@@ -62,7 +73,8 @@ function RegisterScreen() {
 
             <Form.Group controlId='email'>
                 <Form.Label>Email Address</Form.Label>
-                <Form.Control 
+                <Form.Control
+                    required 
                     type='email'
                     placeholder='Enter Email'
                     value={email}
@@ -74,6 +86,7 @@ function RegisterScreen() {
             <Form.Group controlId='password'>
                 <Form.Label>Password</Form.Label>
                 <Form.Control 
+                    required
                     type='password'
                     placeholder='Enter Password'
                     value={password}
@@ -85,6 +98,7 @@ function RegisterScreen() {
             <Form.Group controlId='passwordConfirm'>
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control 
+                    required
                     type='password'
                     placeholder='Confirm Password'
                     value={confirmPassword}
@@ -93,17 +107,15 @@ function RegisterScreen() {
                 </Form.Control>
             </Form.Group>
 
-            <Button type='submit' variant='primary'>Register</Button>
+            <Button type='submit' variant='primary'>Update</Button>
             </Form>
-            <Row className='py-3'>
-                <Col>
-                    Have an Account? <Link to='/login'>Sign</Link>
-                </Col>
-            </Row>
+        </Col>
 
-
-    </FormContainer>
+        <Col md={9}>
+            <h2>My Orders</h2>
+        </Col>
+    </Row>
   )
 }
 
-export default RegisterScreen
+export default ProfileScreen
