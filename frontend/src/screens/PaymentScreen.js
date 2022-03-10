@@ -14,7 +14,7 @@ function PaymentScreen() {
 
     let navigate = useNavigate();
 
-    const [paymentMethod, setPaymentMethod] = useState('PayPal')
+    const [paymentMethod, setPaymentMethod] = useState()
 
     if (!shippingAddress.address) {
         navigate('/shipping')
@@ -22,7 +22,7 @@ function PaymentScreen() {
 
     const submitHandler = (e) => {
         e.preventDefault()
-        dispatch(savePaymentMethod())
+        dispatch(savePaymentMethod(paymentMethod))
         navigate('/placeorder')
     }
 
@@ -35,13 +35,24 @@ function PaymentScreen() {
                     <Col>
                         <Form.Check
                             type = 'radio'
-                            label = 'PayPal or Credit Card'
+                            label = 'PayPal'
                             id = 'paypal'
                             name = 'paymentMethod'
-                            checked
+                            value = 'PayPal'
                             onChange = {(e) => setPaymentMethod(e.target.value)}
                         >
+                        </Form.Check>
+                    </Col>
 
+                    <Col>
+                        <Form.Check
+                            type = 'radio'
+                            label = 'Credit Card'
+                            id = 'creditCard'
+                            name = 'paymentMethod'
+                            value = 'Credit Card'
+                            onChange = {(e) => setPaymentMethod(e.target.value)}
+                        >
                         </Form.Check>
                     </Col>
                 </Form.Group>
