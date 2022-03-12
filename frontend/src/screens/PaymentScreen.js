@@ -30,7 +30,7 @@ function PaymentScreen() {
         <FormContainer>
             <CheckoutSteps step1 step2 step3 />
             <Form onSubmit={submitHandler}>
-                <Form.Group>
+                <Form.Group> 
                     <Form.Label as='legend'>Select Method</Form.Label>
                     <Col>
                         <Form.Check
